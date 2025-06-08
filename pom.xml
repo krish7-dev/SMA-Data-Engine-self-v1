@@ -4,6 +4,13 @@
                              http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.2.5</version>
+        <relativePath/> <!-- Makes sure it doesn’t expect a parent directory -->
+    </parent>
+
     <groupId>com.marketdata</groupId>
     <artifactId>market-data-engine</artifactId>
     <version>1.0-SNAPSHOT</version>
@@ -17,6 +24,13 @@
     </properties>
 
     <dependencies>
+
+        <!-- Spring Boot Web for REST and WebSocket -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+
         <!-- Spring Boot Web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -30,15 +44,8 @@
             <scope>runtime</scope>
             <optional>true</optional> <!-- Optional: allows exclusion in production builds -->
         </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-        </dependency>
 
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
+
     </dependencies>
 
     <build>
