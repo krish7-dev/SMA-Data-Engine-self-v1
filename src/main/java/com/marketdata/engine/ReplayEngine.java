@@ -2,14 +2,19 @@ package com.marketdata.engine;
 
 import com.marketdata.model.Candle;
 import com.marketdata.ws.MarketDataWebSocketHandler;
+import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+@Service
 public class ReplayEngine {
 
     private final MarketDataWebSocketHandler socketHandler;
     private List<Candle> candles;
+
+    private volatile boolean running = false;
+    private Thread replayThread;
 
     public ReplayEngine(MarketDataWebSocketHandler socketHandler) {
         this.socketHandler = socketHandler;
@@ -19,19 +24,45 @@ public class ReplayEngine {
         this.candles = candles;
     }
 
-    public void startReplay() {
-        new Thread(() -> {
+    public synchronized void startReplay() {
+        if (running) {
+            System.out.println("⏩ Replay already running.");
+            return;
+        }
+
+        running = true;
+        replayThread = new Thread(() -> {
             try {
                 for (Candle c : candles) {
-                    String json = candleToJson(c); // manual JSON
+                    if (!running) break;
+
+                    String json = candleToJson(c);
                     socketHandler.broadcast(json);
                     System.out.println(json);
                     Thread.sleep(100); // simulate market flow
                 }
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                System.out.println("⛔ Replay thread interrupted.");
+            } finally {
+                running = false;
             }
-        }).start();
+        });
+
+        replayThread.start();
+    }
+
+    public synchronized void stopReplay() {
+        if (running && replayThread != null) {
+            running = false;
+            replayThread.interrupt();
+            System.out.println("⏹️ Replay stopped.");
+        } else {
+            System.out.println("⚠️ No replay is running.");
+        }
+    }
+
+    public boolean isRunning() {
+        return running;
     }
 
     private String candleToJson(Candle c) {

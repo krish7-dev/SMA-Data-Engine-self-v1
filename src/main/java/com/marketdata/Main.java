@@ -12,7 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.util.List;
 
 @SpringBootApplication
-public class Main implements CommandLineRunner {
+public class Main{
 
     @Autowired
     private MarketDataWebSocketHandler socketHandler;
@@ -21,13 +21,4 @@ public class Main implements CommandLineRunner {
         SpringApplication.run(Main.class, args);
     }
 
-    @Override
-    public void run(String... args) throws Exception {
-        DataEngine dataEngine = new DataEngine();
-        List<Candle> history = dataEngine.fetchHistoryData();
-
-        ReplayEngine replayEngine = new ReplayEngine(socketHandler);
-        replayEngine.loadCandles(history);
-        replayEngine.startReplay();
-    }
 }
