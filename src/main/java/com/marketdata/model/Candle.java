@@ -11,6 +11,16 @@ public class Candle {
     private double close;
     private double volume;
 
+    public Candle(String symbol, Date timestamp, double open, double high, double low, double close, double volume) {
+        this.symbol = symbol;
+        this.timestamp = timestamp;
+        this.open = open;
+        this.high = high;
+        this.low = low;
+        this.close = close;
+        this.volume = volume;
+    }
+
     public String getSymbol() { return symbol; }
     public Date getTimestampDate() { return timestamp; }
     public long getTimestamp() { return timestamp.getTime(); }
